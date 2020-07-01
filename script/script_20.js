@@ -61,25 +61,26 @@ window.addEventListener('DOMContentLoaded', () => {
     // Меню
     const toggleMenu = () => {
 
-        const btnMenu = document.querySelector('.menu'),
-            menu = document.querySelector('menu'),
-            closeBtn = document.querySelector('.close-btn'),
-            menuItems = menu.querySelectorAll('ul>li');
-        console.log(btnMenu);
-        console.log(menu);
+        const menu = document.querySelector('menu'),
+            body = document.querySelector('body');
 
         // Появление/скрытие меню
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
-
         };
+        
+        body.addEventListener('click', (event) => {
+            const target = event.target;
+            //console.log(event.target.closest('menu') || event.target.closest('.menu'));
+            if (target.closest('menu') || target.closest('.menu')) {
+                handlerMenu();
+            } 
+            
+            // else if (event.target.classList.contains('active-menu')) {
+            //     menu.classList.add('active-menu');
+            // }
 
-        btnMenu.addEventListener('click', handlerMenu);
-
-        closeBtn.addEventListener('click', handlerMenu );
-
-        menuItems.forEach((elem) => elem.addEventListener('click', handlerMenu));
-
+        });
     };
 
     toggleMenu();
@@ -105,7 +106,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     } else {
                         let start = 0;
      
-                     function step() {
+                     const step = () => {
                          
                          start++;
                          popupCont.style.top = 15*start + 'px';
@@ -115,19 +116,72 @@ window.addEventListener('DOMContentLoaded', () => {
                          } else {
                              cancelAnimationFrame(requestId);
                          }
-                     }
+                     };
      
                      let requestId = requestAnimationFrame(step);
                     }
                  });
         });
 
-        popupClose.addEventListener('click', () => {
-            popup.style.display = 'none';
-        });
 
+        popup.addEventListener('click', (event) => {
+            let target = event.target;
+            // closest ищет ближайший родитель по селектору, сам элемент тоже включается в поиск
+            // target = null, если кликнули не по popup-у и вернет сам элемент, если кликнули по нему
+
+            if (target.classList.contains('popup-close')) {
+                popup.style.display = 'none';
+            } else {
+                target = target.closest('.popup-content');
+
+                if (!target) {
+                popup.style.display = 'none';
+                }
+            }
+        }); 
     };
 
     togglePopUp();
 
+    // Табы
+
+    const tabs = () => {
+        const tabHeader = document.querySelector('.service-header'),
+            tab = tabHeader.querySelectorAll('.service-header-tab'),
+            tabContent = document.querySelectorAll('.service-tab');
+
+        const toggleTabContent = (index) => {
+            for (let i = 0; i < tabContent.length; i++) {
+                if (index === i) {
+                    tab[i].classList.add('active');
+                    tabContent[i].classList.remove('d-none');
+                } else {
+                    tab[i].classList.remove('active');
+                    tabContent[i].classList.add('d-none');
+                }
+            }
+        };
+
+        tabHeader.addEventListener('click', (event) => {
+            let target = event.target;
+            // вернет null, если не найдет селектор. Поднимается только вверх.
+            // Если найдет селектор, то вернет этот элемент.
+                target = target.closest('.service-header-tab');
+
+            while(target !== tabHeader) {
+
+                if (target) {
+                    tab.forEach((item, i) => {
+                       if (item === target) {
+                           toggleTabContent(i);
+                       }
+                   });
+                   return;
+                }
+                target = target.parentNode;              
+            }
+        });
+    };
+
+    tabs();
 });
