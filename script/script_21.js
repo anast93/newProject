@@ -71,14 +71,27 @@ window.addEventListener('DOMContentLoaded', () => {
         
         body.addEventListener('click', (event) => {
             const target = event.target;
-            //console.log(event.target.closest('menu') || event.target.closest('.menu'));
+
+            // То, что было в 20-м
             if (target.closest('menu') || target.closest('.menu')) {
+                console.log(target.closest('menu'));
                 handlerMenu();
             } 
-            
-            // else if (event.target.classList.contains('active-menu')) {
+
+
+            // if (menu.classList.contains('active-menu') && !target.closest('menu')) {
             //     menu.classList.add('active-menu');
             // }
+            
+            // if (!menu.classList.contains('active-menu')) {
+            //     if (target.closest('.menu')) {
+            //         menu.classList.add('active-menu');
+            //     }
+            // } else if (target.classList.contains('close-btn') || !target.closest('menu') || target.closest('.active-menu').matches('a')) {
+            //     console.log(target.closest('.active-menu'));
+            //     menu.classList.remove('active-menu');
+            // }
+            
 
         });
     };
@@ -92,7 +105,6 @@ window.addEventListener('DOMContentLoaded', () => {
             popupClose = document.querySelector('.popup-close'),
             popupCont = document.querySelector('.popup-content'),
             height = document.documentElement.clientHeight;
-            console.log(height);
 
         
         popupBtn.forEach((elem) => {
@@ -184,4 +196,113 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     tabs();
+
+    // слайдер
+
+    const slider = () => {
+        const slide = document.querySelectorAll('.portfolio-item'),
+            btn = document.querySelectorAll('.portfolio-btn'),
+            slider = document.querySelector('.portfolio-content'),
+            dotsUl = slider.querySelector('.portfolio-dots');
+
+            for (let i = 0; i < slide.length; i++) {
+                const dotLi = document.createElement('li');
+                dotLi.classList.add('dot');
+    
+                dotsUl.append(dotLi);
+
+            }
+            
+            const dot = document.querySelectorAll('.dot');
+            dot[0].classList.add('dot-active');
+
+        let currentSlide = 0,
+            interval;
+
+        const prevSlide = (elem, index, strClass) => {
+            elem[index].classList.remove(strClass);
+        };
+
+        const nextSlide = (elem, index, strClass) => {
+            elem[index].classList.add(strClass);
+
+        };
+
+        const autoPlaySlide = () => {
+
+            prevSlide(dot, currentSlide, 'dot-active');
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+            
+            currentSlide++;
+            if(currentSlide >= slide.length) {
+                currentSlide = 0;
+            }
+            nextSlide(dot, currentSlide, 'dot-active');
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+            
+        };
+
+        const startSlide = (time = 3000) => {
+            interval = setInterval(autoPlaySlide, time);
+
+        };
+
+        const stopSlide = () => {
+            clearInterval(interval);
+        };
+
+        slider.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            let target = event.target;
+
+            if(!target.matches('#arrow-right, #arrow-left, .dot' )) {
+                return;
+            }
+
+            prevSlide(dot, currentSlide, 'dot-active');
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+
+            if (target.matches('#arrow-right')) {
+                currentSlide++;
+            } else if (target.matches('#arrow-left')) {
+                currentSlide--;
+            } else if(target.matches('.dot')) {
+                dot.forEach((elem, index) => {
+                    if (elem === target) {
+                        currentSlide = index;
+                    }
+                });
+            }
+
+            if(currentSlide >= slide.length) {
+                currentSlide = 0;
+            }
+
+            if(currentSlide < 0) {
+                currentSlide = slide.length - 1;
+            }
+            nextSlide(dot, currentSlide, 'dot-active');
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+        });
+
+        slider.addEventListener('mouseover', (event) => {
+            if (event.target.matches('.portfolio-btn') || event.target.matches('.dot')) {
+                stopSlide();
+            }
+        });
+        
+        slider.addEventListener('mouseout', (event) => {
+            if (event.target.matches('.portfolio-btn') || event.target.matches('.dot')) {
+                startSlide();
+            }
+        });
+
+        startSlide(2000);
+
+
+
+    }
+
+    slider();
 });
