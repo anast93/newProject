@@ -302,7 +302,58 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-    }
+    };
 
     slider();
+
+    // Изменение картинки на блоке Наша команда
+
+    const chngImgOurCommand = () => {
+
+        const command = document.querySelector('.command');
+
+        command.addEventListener('mouseover', (event) => {
+            if(event.target.matches('.command__photo')) {
+                event.target.src = event.target.dataset.img;
+            }
+        });
+
+        const photoList = document.querySelectorAll('.command__photo');
+
+        // Массив с прежними картинками
+        const arrSrc = [];
+        photoList.forEach((item) => {
+            arrSrc.push(item.src);
+        });
+
+        // NodeList приводим к массиву, иначе не работают методы для массива
+        const photoArray = Array.from(photoList);
+
+        command.addEventListener('mouseout', (event) => {
+            if(event.target.matches('.command__photo')) {
+                const index = photoArray.indexOf(event.target);
+                //console.log(index);
+                event.target.src = arrSrc[index];
+            }
+        });
+
+
+    };
+
+    chngImgOurCommand();
+
+    // Ограничение ввода любых символов, кроме цифр,в Калькуляторе стоимости
+    const checkInputCalc = () => {
+
+        const calcBlock = document.querySelector('.calc-block');
+
+        calcBlock.addEventListener('input', (event) => {
+            if(event.target.matches('input')) {
+                event.target.value = event.target.value.replace(/\D/g, '');
+            }
+            
+        });
+    }
+
+    checkInputCalc();
 });
