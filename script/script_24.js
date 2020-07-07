@@ -82,9 +82,42 @@ window.addEventListener('DOMContentLoaded', () => {
                 handlerMenu();
                 //menu.classList.remove('active-menu');
             }
-
-
         });
+
+        // Плавная прокрутка при клике на элементы меню и при клике на стрелочку на первом слайде
+        scroll = () => {
+            menu.addEventListener('click', (event) => {
+                const target = event.target;
+
+                if(target.closest('menu ul>li>a')) {
+                    event.preventDefault();
+                    const id = target.closest('menu ul>li>a').getAttribute('href');
+                    document.querySelector(id).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                    });
+                }
+            });
+
+
+            const main = document.querySelector('main');
+
+            // Плавная прокрутка при клике на Стрелочку на 1-ом слайде
+            main.addEventListener('click', (event) => {
+                const target = event.target; 
+
+                if(target.closest('a>img')) {
+                    event.preventDefault();
+
+                    const id = target.closest('a').getAttribute('href');
+                    document.querySelector(id).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+                } 
+            });
+        }
+        scroll();
     };
 
     toggleMenu();
