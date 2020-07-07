@@ -69,29 +69,20 @@ window.addEventListener('DOMContentLoaded', () => {
             menu.classList.toggle('active-menu');
         };
         
+        // Добавлены 1 обработчик и скрытие меню при нажатии по любому месту документа, кроме меню
         body.addEventListener('click', (event) => {
             const target = event.target;
 
-            // То, что было в 20-м
-            if (target.closest('menu') || target.closest('.menu')) {
-                console.log(target.closest('menu'));
+
+            if (target.closest('menu ul>li>a') || target.closest('.menu') || target.closest('.close-btn')) {
                 handlerMenu();
-            } 
+            }
 
+            if(menu.classList.contains('active-menu') && !target.matches('menu') && !target.closest('.menu') ) {
+                handlerMenu();
+                //menu.classList.remove('active-menu');
+            }
 
-            // if (menu.classList.contains('active-menu') && !target.closest('menu')) {
-            //     menu.classList.add('active-menu');
-            // }
-            
-            // if (!menu.classList.contains('active-menu')) {
-            //     if (target.closest('.menu')) {
-            //         menu.classList.add('active-menu');
-            //     }
-            // } else if (target.classList.contains('close-btn') || !target.closest('menu') || target.closest('.active-menu').matches('a')) {
-            //     console.log(target.closest('.active-menu'));
-            //     menu.classList.remove('active-menu');
-            // }
-            
 
         });
     };
