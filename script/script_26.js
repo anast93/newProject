@@ -135,7 +135,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 elem.addEventListener('click', () => {
                     popup.style.display = 'block';
-                    console.log(screen.width);
      
                     if(screen.width < 768) {
                         return;
@@ -468,5 +467,102 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     calc(100);
+
+        // send-ajax-form
+
+        const sendForm = () => {
+            const errorMessage = 'Что-то пошло не так...',
+                preload = '<img src="./images/oval.svg">',
+                successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+    
+            const statusMessage = document.createElement('div');
+            statusMessage.style.fontSize = "1.7rem";
+
+            document.addEventListener('submit', (event) => {
+                const target = event.target;
+                if(target.matches('form')) {
+                    event.preventDefault();
+
+                    const form = target.closest('form');
+
+                    if(form.closest('.connect')) {
+                        document.querySelector('.connect .btn').style.marginBottom = "10px";
+                    }
+
+                    if(form.closest('.popup')) {
+                        statusMessage.style.color = "white";
+                    }
+
+                    form.appendChild(statusMessage);
+
+                    statusMessage.innerHTML = preload;
+
+                    const formData = new FormData(form);
+                    let body = {};
+                    formData.forEach((val, key) => {
+                        body[key] = val;
+                    });
+
+                    form.reset();
+
+                    postData(body, () => {
+                        statusMessage.textContent = successMessage;
+                    }, (error) => {
+                        statusMessage.textContent = errorMessage;
+                    console.error(error);
+                    });
+                }
+            });
+
+            const postData = (body, outputData, errorData) => {
+                const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+
+                    if(request.readyState !== 4) {
+                    return;
+                    }
+
+                    if(request.status === 200) {
+                    outputData();
+                    } else {
+                    errorData(request.status);
+                    }
+                });
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'aplication/json');
+            
+                console.log(body);
+                request.send(JSON.stringify(body));
+            };
+        }
+    
+        sendForm();
+
+        // Валидация данных
+        
+        const validator = () => {
+            document.addEventListener('input', (event) => {
+                const target = event.target,
+                    inputText = target.closest('input[name="user_name"], input[name="user_message"]'),
+                    inputPhone = target.closest('input[name="user_phone"]');
+
+                if(inputText) {
+                    inputText.setAttribute("pattern", "[А-Яа-яёЁ ]+");
+                    inputText.setAttribute('title', 'Используйте для ввода только символы кириллицы и пробел.');
+                    // А вот это работает 
+                    //inputText.value = inputText.value.replace(/[^а-яё\s]/gi, '');
+                }
+
+                if(inputPhone) {
+                    inputPhone.setAttribute("pattern", "\\+?\\d+");
+                    inputPhone.setAttribute('title', 'Допустимо использовать только знак "+" в начале и цифры.');
+                    // Что-то пошло не так
+                    // Потом разобраться с регуляркой
+                    //inputPhone.value = inputPhone.value.replace(/[^+]?\D+/g, '');
+                }
+            });
+        }
+        
+        validator();
 });
 
