@@ -547,18 +547,15 @@ window.addEventListener('DOMContentLoaded', () => {
                     inputPhone = target.closest('input[name="user_phone"]');
 
                 if(inputText) {
-                    inputText.setAttribute("pattern", "[А-Яа-яёЁ ]+");
-                    inputText.setAttribute('title', 'Используйте для ввода только символы кириллицы и пробел.');
-                    // А вот это работает 
-                    //inputText.value = inputText.value.replace(/[^а-яё\s]/gi, '');
+                    // inputText.setAttribute("pattern", "[А-Яа-яёЁ ]+");
+                    // inputText.setAttribute('title', 'Используйте для ввода только символы кириллицы и пробел.');
+                    inputText.value = inputText.value.replace(/[^а-яё\s]/gi, '');
                 }
 
                 if(inputPhone) {
-                    inputPhone.setAttribute("pattern", "\\+?\\d+");
-                    inputPhone.setAttribute('title', 'Допустимо использовать только знак "+" в начале и цифры.');
-                    // Что-то пошло не так
-                    // Потом разобраться с регуляркой
-                    //inputPhone.value = inputPhone.value.replace(/[^+]?\D+/g, '');
+                    // inputPhone.setAttribute("pattern", "\\+?\\d+");
+                    // inputPhone.setAttribute('title', 'Допустимо использовать только знак "+" в начале и цифры.');
+                    inputPhone.value = inputPhone.value.replace(/^[^+\d]*(\+|\d)|\D/g, '$1');
                 }
             });
         }
