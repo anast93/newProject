@@ -505,34 +505,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     form.reset();
 
-                    postData(body, () => {
-                        statusMessage.textContent = successMessage;
-                    }, (error) => {
+                    postData(body)
+                    .then(() => statusMessage.textContent = successMessage)
+                    .catch((error) => {
                         statusMessage.textContent = errorMessage;
-                    console.error(error);
+                        console.error(error);
                     });
                 }
             });
 
             const postData = (body, outputData, errorData) => {
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
+                return new Promise((resolve, reject) => {
+                    const request = new XMLHttpRequest();
+                    request.addEventListener('readystatechange', () => {
 
                     if(request.readyState !== 4) {
                     return;
                     }
 
                     if(request.status === 200) {
-                    outputData();
+                        const response = request.responseText;
+                        resolve(response);
                     } else {
-                    errorData(request.status);
+                        reject(request.statusText);
                     }
-                });
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'aplication/json');
+                    });
+                    request.open('POST', './server.php');
+                    request.setRequestHeader('Content-Type', 'aplication/json');
             
-                console.log(body);
-                request.send(JSON.stringify(body));
+                    console.log(body);
+                    request.send(JSON.stringify(body));
+                });
             };
         }
     
