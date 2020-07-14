@@ -494,19 +494,22 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
 
                     form.appendChild(statusMessage);
-
                     statusMessage.innerHTML = preload;
-
                     const formData = new FormData(form);
-                    let body = {};
-                    formData.forEach((val, key) => {
-                        body[key] = val;
-                    });
-
                     form.reset();
 
-                    postData(body)
-                    .then(() => statusMessage.textContent = successMessage)
+                    postData(formData)
+                    .then((response) => {
+                        if(response.status !== 200) {
+                            throw new Error('status network not 200');
+                        }
+                        statusMessage.textContent = successMessage;
+                        console.log(...formData);
+                        // for(var item of formData.entries()) {
+                        //     console.log(item[0]+ ', '+ item[1]); 
+                        //  }
+                        
+                    })
                     .catch((error) => {
                         statusMessage.textContent = errorMessage;
                         console.error(error);
@@ -514,27 +517,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            const postData = (body, outputData, errorData) => {
-                return new Promise((resolve, reject) => {
-                    const request = new XMLHttpRequest();
-                    request.addEventListener('readystatechange', () => {
-
-                    if(request.readyState !== 4) {
-                    return;
-                    }
-
-                    if(request.status === 200) {
-                        const response = request.responseText;
-                        resolve(response);
-                    } else {
-                        reject(request.statusText);
-                    }
-                    });
-                    request.open('POST', './server.php');
-                    request.setRequestHeader('Content-Type', 'aplication/json');
-            
-                    console.log(body);
-                    request.send(JSON.stringify(body));
+            const postData = (form) => {
+                return fetch('./server.php', {
+                    method: 'POST',
+                    headers: {
+                        // application/x-www-form-urlencoded
+                        'Content-Type': 'form/multipart'
+                    },
+                    body: form
                 });
             };
         }
@@ -550,19 +540,14 @@ window.addEventListener('DOMContentLoaded', () => {
                     inputPhone = target.closest('input[name="user_phone"]');
 
                 if(inputText) {
-                    // inputText.setAttribute("pattern", "[А-Яа-яёЁ ]+");
-                    // inputText.setAttribute('title', 'Используйте для ввода только символы кириллицы и пробел.');
                     inputText.value = inputText.value.replace(/[^а-яё\s]/gi, '');
                 }
 
                 if(inputPhone) {
-                    // inputPhone.setAttribute("pattern", "\\+?\\d+");
-                    // inputPhone.setAttribute('title', 'Допустимо использовать только знак "+" в начале и цифры.');
                     inputPhone.value = inputPhone.value.replace(/^[^+\d]*(\+|\d)|\D/g, '$1');
                 }
             });
         }
-        
         validator();
 });
 
