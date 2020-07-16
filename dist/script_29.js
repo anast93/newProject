@@ -53,7 +53,7 @@ window.addEventListener('DOMContentLoaded', () => {
         } else setInterval(updateClock, 1000);
 
 
-    }
+    };
 
     countTimer('30 June 2020 13:39:20');
 
@@ -335,32 +335,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const command = document.querySelector('.command');
 
+        const change = (e) => {
+            [e.target.dataset.img, e.target.src] = [e.target.src, e.target.dataset.img];
+        };
+
         command.addEventListener('mouseover', (event) => {
             if(event.target.matches('.command__photo')) {
-                event.target.src = event.target.dataset.img;
+                change(event);
             }
         });
-
-        const photoList = document.querySelectorAll('.command__photo');
-
-        // Массив с прежними картинками
-        const arrSrc = [];
-        photoList.forEach((item) => {
-            arrSrc.push(item.src);
-        });
-
-        // NodeList приводим к массиву, иначе не работают методы для массива
-        const photoArray = Array.from(photoList);
 
         command.addEventListener('mouseout', (event) => {
             if(event.target.matches('.command__photo')) {
-                const index = photoArray.indexOf(event.target);
-                //console.log(index);
-                event.target.src = arrSrc[index];
+                change(event);
             }
         });
-
-
     };
 
     chngImgOurCommand();
