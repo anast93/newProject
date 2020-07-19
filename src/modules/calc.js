@@ -1,3 +1,4 @@
+'use strict';
 const calc = (price = 100) => {
     const calcBlock = document.querySelector('.calc-block'),
         calcType = document.querySelector('.calc-type'),
@@ -62,10 +63,10 @@ const calc = (price = 100) => {
                 totalValue.textContent = count;
                 requestAnimationFrame(totalAnimation);
             } 
-        }
+        };
 
         let requestId = requestAnimationFrame(totalAnimation);
-    }
+    };
     
     calcBlock.addEventListener('change', (event) => {
         const target = event.target;

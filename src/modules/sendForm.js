@@ -1,3 +1,4 @@
+'use strict';
 const sendForm = () => {
     const errorMessage = 'Что-то пошло не так...',
         preload = '<img src="./images/oval.svg">',
@@ -51,6 +52,6 @@ const sendForm = () => {
             body: form
         });
     };
-}
+};
 
 export default sendForm;

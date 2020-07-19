@@ -1,12 +1,14 @@
 'use strict';
 
+import "@babel/polyfill";
 import elementClosest from 'element-closest';
-import '@babel/polyfill';
-import 'nodelist-foreach-polyfill';
 elementClosest(window);
+import 'nodelist-foreach-polyfill';
 import 'es6-promise';
 import 'formdata-polyfill';
 import 'fetch-polyfill';
+import 'whatwg-fetch';
+
 
 
 import countTimer from './modules/countTimer';

@@ -1,3 +1,4 @@
+'use strict';
 const toggleMenu = () => {
 
     const menu = document.querySelector('menu'),
@@ -24,7 +25,7 @@ const toggleMenu = () => {
     });
 
     // Плавная прокрутка при клике на элементы меню и при клике на стрелочку на первом слайде
-    scroll = () => {
+    const scroll = () => {
         menu.addEventListener('click', (event) => {
             const target = event.target;
 
@@ -54,7 +55,7 @@ const toggleMenu = () => {
             });
             } 
         });
-    }
+    };
     scroll();
 };
 

@@ -1,3 +1,4 @@
+'use strict';
 function countTimer(deadline) {
     deadline = '20 July 2020 13:39:20';
     let timerHours = document.querySelector('#timer-hours'),
@@ -45,6 +46,6 @@ function countTimer(deadline) {
     if (getTimeRemaining().timeRemaining <= 0) {
         clearInterval(setInterval(updateClock, 1000));
     } else setInterval(updateClock, 1000);
-};
+}
 
 export default countTimer;

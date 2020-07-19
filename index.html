@@ -15,6 +15,89 @@
 	<link rel="mask-icon" href="./images/favicon/safari-pinned-tab.svg" color="#5bbad5">
 	<meta name="msapplication-TileColor" content="#b91d47">
 	<meta name="theme-color" content="#ffffff">
+	<script type="text/javascript">
+	(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('append')) {
+      return;
+    }
+    Object.defineProperty(item, 'append', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function append() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
+        
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
+        
+        this.appendChild(docFrag);
+      }
+    });
+  });
+})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
+
+(function() {
+    // helpers
+    var regExp = function(name) {
+        return new RegExp('(^| )'+ name +'( |$)');
+    };
+    var forEach = function(list, fn, scope) {
+        for (var i = 0; i < list.length; i++) {
+            fn.call(scope, list[i]);
+        }
+    };
+
+    // class list object with basic methods
+    function ClassList(element) {
+        this.element = element;
+    }
+
+    ClassList.prototype = {
+        add: function() {
+            forEach(arguments, function(name) {
+                if (!this.contains(name)) {
+                    this.element.className += ' '+ name;
+                }
+            }, this);
+        },
+        remove: function() {
+            forEach(arguments, function(name) {
+                this.element.className =
+                    this.element.className.replace(regExp(name), '');
+            }, this);
+        },
+        toggle: function(name) {
+            return this.contains(name) 
+                ? (this.remove(name), false) : (this.add(name), true);
+        },
+        contains: function(name) {
+            return regExp(name).test(this.element.className);
+        },
+        // bonus..
+        replace: function(oldName, newName) {
+            this.remove(oldName), this.add(newName);
+        }
+    };
+
+    // IE8/9, Safari
+    if (!('classList' in Element.prototype)) {
+        Object.defineProperty(Element.prototype, 'classList', {
+            get: function() {
+                return new ClassList(this);
+            }
+        });
+    }
+
+    // replace() support for others
+    if (window.DOMTokenList && DOMTokenList.prototype.replace == null) {
+        DOMTokenList.prototype.replace = ClassList.prototype.replace;
+    }
+})();
+	</script>
 </head>
 
 <body>

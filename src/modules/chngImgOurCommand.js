@@ -1,3 +1,4 @@
+'use strict';
 const chngImgOurCommand = () => {
 
     const command = document.querySelector('.command');

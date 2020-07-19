@@ -1,3 +1,4 @@
+'use strict';
 const checkInputCalc = () => {
 
     const calcBlock = document.querySelector('.calc-block');
